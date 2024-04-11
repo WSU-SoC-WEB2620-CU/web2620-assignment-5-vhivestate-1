@@ -1,7 +1,23 @@
 // Your styles go here
+
+@import "nav";
+
+/*My created variables*/
+$color1: rgba(255, 255, 255, .5);
+$colorBlue: rgb(16, 16, 202);
+$smidge: 0.5em;
+$oneAndSmidge: 1.5em;
+$transparentGray: rgba(0, 0, 0, .1);
+$borderDark: #303030;
+$smallWidth: 1200px;
+$deepPurple: #333;
+$biggerthan1: 1.6em;
+$darkgray: #202020;
+
+
 body {
-  background: #202020 url('/images/footer-bg.jpg') repeat;
-  min-width: 1200px;
+  background: $darkgray url('/images/footer-bg.jpg') repeat;
+  min-width: $smallWidth;
   margin: 0;
   padding: 0;
 }
@@ -49,12 +65,12 @@ i {
 }
 
 a {
-  color: #0d6efd;
+  color: $colorBlue;
 }
 
 sub {
   position: relative;
-  top: 0.5em;
+  top: $smidge;
   font-size: 0.8em;
 }
 
@@ -77,36 +93,27 @@ table {
   margin-bottom: 1em;
 }
 
+// Adding nesting to elements
 header {
   margin-bottom: 2em;
   line-height: 1.7em;
+  h2 {
+    font-size: 2.5em;
+  }
+  .byline {
+    display: block;
+    margin: $smidge 0 0 0;
+    padding: 0 0 $smidge 0;
+    text-transform: uppercase;
+    font-size: 1.4em;
+  }
 }
 
-header h2 {
-  font-size: 2.5em;
-}
-
-header .byline {
-  display: block;
-  margin: 0.5em 0 0 0;
-  padding: 0 0 0.5em 0;
-  text-transform: uppercase;
-  font-size: 1.4em;
-}
-
-section,
-article {
+section, article {
   margin-bottom: 3em;
-}
-
-section > :last-child,
-article > :last-child {
-  margin-bottom: 0;
-}
-
-section:last-child,
-article:last-child {
-  margin-bottom: 0;
+  :last-child {
+    margin-bottom: 0;
+  }
 }
 
 blockquote {
@@ -121,41 +128,48 @@ footer {
 }
 
 .container {
-  width: 1200px;
+  width: $smallWidth;
   margin-left: auto;
   margin-right: auto;
-}
-
-.container.small {
-  width: 900px;
-}
-
-.container.big {
-  width: 100%;
-  max-width: 1500px;
-  min-width: 1200px;
-}
-
-.row section,
-.row article {
-  margin-bottom: 0;
-}
-
-.row [class*='column-'] {
-  padding: 50px 0 0 50px;
-  float: left;
-  box-sizing: border-box;
+  .small {
+    width: 900px;
+  }
+  .big {
+    width: 100%;
+    max-width: 1500px;
+    min-width: $smallWidth;
+  }
 }
 
 .row {
   margin-left: -50px;
+  :after{
+    content: '';
+    display: block;
+    clear: both;
+    height: 0;
+  }
+  .row section, .row article {
+  margin-bottom: 0;
+  }
+  [class*='column-'] {
+    padding: 50px 0 0 50px;
+    float: left;
+    box-sizing: border-box;
+  }
 }
 
-.row:after {
-  content: '';
-  display: block;
-  clear: both;
-  height: 0;
+@mixin make-column($width){
+  width: $width;
+}
+
+$column-list: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12;
+
+@each $col in $column-list{
+  $ind: index($column-list, $col);
+  .column-#{$ind}{
+    @include make-column($ind * calc(12/100))
+  }
 }
 
 .column-1,
@@ -164,7 +178,8 @@ footer {
 .column-4,
 .column-5,
 .column-6,
-.column-7.column-8,
+.column-7,
+.column-8,
 .column-9,
 .column-10,
 .column-11,
@@ -221,106 +236,95 @@ footer {
     width: 100%;
   }
 }
+/*Creating a mixin to stop some of the repeating that occurs in the following block*/
+@mixin displayBlockFullWidth{
+  display: block;
+  width: 100%;
+}
 
+// nesting
 .image {
   display: inline-block;
+  img {
+    @include displayBlockFullWidth();
+  }
+  .featured {
+    @include displayBlockFullWidth();
+    margin: 0 0 2em 0;
+  }
+  .full {
+    @include displayBlockFullWidth();
+    margin-bottom: 2em;
+  }
+  .left {
+    float: left;
+    margin: 0 2em 2em 0;
+  }
+  .centered {
+    display: block;
+    margin: 0 0 2em 0;
+    img {
+      margin: 0 auto;
+      width: auto;
+    }
+  }
 }
+/* A mixin that will save space and code by handling 3 attributes that are continually repeated in the three following ul nests */
 
-.image img {
-  display: block;
-  width: 100%;
-}
-
-.image.featured {
-  display: block;
-  width: 100%;
-  margin: 0 0 2em 0;
-}
-
-.image.full {
-  display: block;
-  width: 100%;
-  margin-bottom: 2em;
-}
-
-.image.left {
-  float: left;
-  margin: 0 2em 2em 0;
-}
-
-.image.centered {
-  display: block;
-  margin: 0 0 2em 0;
-}
-
-.image.centered img {
-  margin: 0 auto;
-  width: auto;
+@mixin noMarginPaddingStyleList{
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
 }
 
 ul.default {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-ul.default li {
-  display: block;
-  padding: 2em 0em 1.25em 0em;
-  border-top: 1px solid #303030;
-}
-
-ul.default li:first-child {
-  padding-top: 0em;
-  border-top: none;
-}
-
-ul.default a {
-  text-decoration: none;
-  color: rgba(255, 255, 255, .5);
-}
-
-ul.default a:hover {
-  text-decoration: underline;
+  @include noMarginPaddingStyleList();
+  li {
+    display: block;
+    padding: 2em 0em 1.25em 0em;
+    border-top: 1px solid $borderDark;
+    :first-child {
+      padding-top: 0em;
+      border-top: none;
+    }
+  }
+  ul.default a {
+    text-decoration: none;
+    color: $color1;
+    :hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 ul.style1 {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-ul.style1 li {
-  padding: 0.60em 0em;
-  border-top: 1px solid;
-  border-color: rgba(0, 0, 0, .1);
-}
-
-ul.style1 li:first-child {
-  padding-top: 0;
-  border-top: 0;
+  @include noMarginPaddingStyleList();
+  li {
+    padding: 0.60em 0em;
+    border-top: 1px solid;
+    border-color: $transparentGray;
+    :first-child {
+      padding-top: 0;
+      border-top: 0;
+    }
+  }
 }
 
 ul.style2 {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-ul.style2 li {
-  padding: 1.90em 0em 1.60em 0em;
-  border-top: 1px solid;
-  border-color: rgba(0, 0, 0, .1);
-}
-
-ul.style2 li:first-child {
-  padding-top: 0;
-  border-top: 0;
-}
-
-ul.style2 img {
-  float: left;
-  padding-right: 1em;
+  @include noMarginPaddingStyleList();
+  li {
+    padding: 1.90em 0em 1.60em 0em;
+    border-top: 1px solid;
+    border-color: $transparentGray;
+    :first-child {
+      padding-top: 0;
+      border-top: 0;
+    }
+  }
+  img {
+    float: left;
+    padding-right: 1em;
+  }
 }
 
 ul.style5 {
@@ -328,20 +332,19 @@ ul.style5 {
   margin: 0em 0em 1em 0em;
   padding: 0em;
   list-style: none;
-}
-
-ul.style5 li {
-  float: left;
-  padding: 0.25em 0.25em;
-  line-height: 0;
+  li {
+    float: left;
+    padding: 0.25em 0.25em;
+    line-height: 0;
+  }
 }
 
 .button {
   position: relative;
   display: inline-block;
-  margin-top: 0.5em;
-  padding: 0.50em 1.5em;
-  background: #0d6efd;
+  margin-top: $smidge;
+  padding: $smidge $oneAndSmidge;
+  background: $colorBlue;
   border-radius: 6px;
   text-decoration: none;
   text-transform: uppercase;
@@ -349,72 +352,35 @@ ul.style5 li {
   color: #FFF;
   transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out;
   cursor: pointer;
+  :hover {
+    background: $colorBlue;
+    color: #FFF !important;
+  }
 }
 
-.button:hover {
-  background: #0d6efd;
-  color: #FFF !important;
-}
 
 .header {
   position: relative;
   background: #FFF;
-}
-
-.header .container {
-  position: relative;
-  padding: 4em 0em;
+  .container {
+    position: relative;
+    padding: 4em 0em;
+  }
 }
 
 .logo {
   position: absolute;
   left: 0em;
   top: 3em;
+  a {
+    display: block;
+    text-decoration: none;
+    font-size: 2.8em;
+    font-weight: 600;
+  }
 }
 
-.logo a {
-  display: block;
-  text-decoration: none;
-  font-size: 2.8em;
-  font-weight: 600;
-}
 
-.nav {
-  position: absolute;
-  right: 0em;
-  top: 2.2em;
-}
-
-.nav ul {
-  list-style-type: none;
-}
-
-.nav ul li {
-  float: left;
-}
-
-.nav ul li:last-child {
-  padding-right: 0;
-}
-
-.nav ul li a,
-.nav ul li span {
-  display: block;
-  margin-left: 0.7em;
-  padding: 0.80em 1.2em;
-  letter-spacing: 0.06em;
-  text-decoration: none;
-  text-transform: uppercase;
-  font-size: 1.1em;
-  outline: 0;
-  color: #333;
-}
-
-.nav li.active a {
-  background: #0d6efd;
-  border-radius: 5px;
-  color: #FFF;
-}
 
 .banner {
   position: relative;
@@ -435,59 +401,53 @@ ul.style5 li {
 }
 
 .sidebar header h2 {
-  font-size: 1.6em;
+  font-size: $biggerthan1;
 }
 
 .footer {
   position: relative;
   color: rgba(255, 255, 255, .4);
-}
-
-.footer h2 {
-  padding-bottom: 1.5em;
-  font-size: 1.6em;
-  color: #FFF;
-}
-
-.footer strong {
-  color: rgba(255, 255, 255, .7);
+  h2 {
+    padding-bottom: $oneAndSmidge;
+    font-size: $biggerthan1;
+    color: #FFF;
+  }
+  strong {
+    color: rgba(255, 255, 255, .7);
+  }
 }
 
 .copyright {
   position: relative;
   padding: 3em 0em;
-  border-top: 1px solid #303030;
+  border-top: 1px solid $borderDark;
   letter-spacing: 1px;
   text-align: center;
   color: rgba(255, 255, 255, .4);
-}
-
-.copyright a {
-  text-decoration: none;
-  color: rgba(255, 255, 255, .4) !important;
+  a {
+    text-decoration: none;
+    color: rgba(255, 255, 255, .4) !important;
+  }
 }
 
 .marketing {
   position: relative;
-}
-
-.marketing header h2 {
-  font-size: 1.6em;
+  header h2 {
+    font-size: 1.6em;
+  }
 }
 
 .featured {
   position: relative;
-}
-
-.featured .divider {
-  border-bottom: 1px solid #303030;
-}
-
-.featured .box {
-  background: #FFF;
-  padding: 1.4em;
-  font-size: 0.95em;
-  border-radius: 5px;
+  .divider {
+    border-bottom: 1px solid $borderDark;
+  }
+  .box {
+    background: #FFF;
+    padding: 1.4em;
+    font-size: 0.95em;
+    border-radius: 5px;
+  }
 }
 
 .balloon {
@@ -496,13 +456,13 @@ ul.style5 li {
   border-radius: 5px;
   line-height: 180%;
   font-size: 1.2em;
-  color: #333;
+  color: $deepPurple;
+  strong {
+    color: $deepPurple !important;
+  }
 }
 
-.ballon-bgbtm {
+.ballon-bgbtm { 
   height: 1.87em;
 }
 
-.balloon strong {
-  color: #333 !important;
-}
